@@ -8,15 +8,19 @@ If you like reading documentations, Automation Anywhere itself has a lot to say 
 
 If you enjoy watching video courses, I think for the most part the videos from Youtube have you covered, I have links to a number of them in [Additional Resources](#additional-resources) that you might want to check out
 
-## DevOps vs BLM
-BLM or Bot Life Cycle management is a separate topic from DevOps. In this blog the focus is on DevOps but just to make things a little bit clearer, Once you logged into Automation Anywhere Control Room, you can find a set of settings for `Remote Git Repository Integration`.
+## Why we need DevOps Pipeline
+
+Automation Anywhere 360 gives users the ability to create bots, run them, version them or roll back to an older version using built-in life cycle management. However all of these are within the context of one Control Room. Organisations usually have separate control rooms to manage user access and make development versions separate from Production which are consumed by real consumers.
+
+In the case of this article, the Customer has 3 separate environments (Control Rooms) and would like to Export, the bots that are complete and ready for production use from Dev to their UAT Control Room while they further get tested. Once they are sure that it works based on their requirements in UAT Control Room then they move it to Production.
+
+![Bot Life Cycle Management Overview](BLMoverviewdiagram.png)
+
+Out of the box Automation Anywhere has its own source control to manage the data, files and other artifacts within a simple Control Room. It also providers `Remote Git Repository Integration` in order to enable users to use a different source control like Azure DevOps
 
 ![Remote Git Repository Integration](RemoteGitRepoIntegration.png)
 
-
-As for my exploration, `Remote Git Repository Integration` can be used as an alternative to where the source code for defined bots configuration are maintained. Automation Anywhere has its own source control and version control features which allow you to compare version histories or bring an older version of a particular bot back in case the new version gets messed up.
-
-This article: [Bot Lifecycle Management: Bring Calm to Your Bot Development Chaos](https://www.automationanywhere.com/company/blog/product-insights/bot-lifecycle-management-bring-calm-to-your-bot-development-chaos) discuss in details the differences between BLM and DevOps for Automation Anywhere
+`Remote Git Repository Integration` however, does not have any features to package bots from one control room and move them to another. For this reason, we use Azure DevOps pipeline to automate API calls which are used for Packaging, exporting and importing bots from a control room to another.
 
 ## DevOps steps
 In order to move bots from one Automation Anywhere Control Room to another for example dev to uat, you need to use [Control Room APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/control-room-api/cloud-control-room-apis.html). This page gives an introduction to control room API and it also include a postman collection which can be used as a playground to understand the API cababilities better
