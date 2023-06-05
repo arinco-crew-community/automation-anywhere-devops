@@ -86,6 +86,15 @@ In order for it to work 3 environment libraries are needed with these values:
 
 The pipeline also needs 2 environments for managing approval process so it gives the administartors the ability to validate the zipped file before importing them into UAT and Prod environments.
 
+## Further steps
+The sample Pipeline depends on providing a comma-seperated list of BotIds for it to work. However this is a very initial and simple pipeline.
+One possible way to bring about more functionality is provide the users the ability to provide a web application with the following functionalities
+- List all existing Bots in the form of folder structure as they are shown in Control Room so user can select them.
+- Giving more information about the bots as for example whether they are checked out, who developed them etc.
+
+For the purpose of this extra work, [Repository Management APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/repository-management-api.html) can be used to list files, folders or workspace information
+
+
 ## Additional Resources
 
 ### Useful articles
