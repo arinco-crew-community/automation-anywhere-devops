@@ -74,6 +74,18 @@ There is one major difference between this API and the rest of the API calls. Th
 
 ![Import Bots](ImportBots.png)
 
+## Sample Pipeline
+The sample pipeline is written for Azure DevOps using `windows-latest` and Powershell for doing the API calls.
+
+This is a multi-staged pipeline to zip the given botIds from the Dev Stage and import them into UAT and then Prod environments.
+
+In order for it to work 3 environment libraries are needed with these values:
+- AutomationAnywhere.Url
+- AutomationAnywhere.Username
+- AutomationAnywhere.ApiKey
+
+The pipeline also needs 2 environments for managing approval process so it gives the administartors the ability to validate the zipped file before importing them into UAT and Prod environments.
+
 ## Additional Resources
 
 ### Useful articles

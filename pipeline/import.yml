@@ -1,0 +1,82 @@
+parameters:
+  - name: ControlRoomName
+    type: string
+  
+  - name: ArchivePath
+    type: string
+
+  - name: ArchiveName
+    type: string
+
+  - name: ArchivePassword
+    type: string
+
+steps:
+- checkout: self
+  name: checkout_pipeline
+  displayName: 'Checkout pipeline'  
+
+- task: PowerShell@2
+  name: get_auth_token
+  displayName: 'Get ${{ parameters.ControlRoomName }} Authentication Token'
+  env:
+    AutomationAnywhere_Username: $(AutomationAnywhere.Username)
+    AutomationAnywhere_ApiKey: $(AutomationAnywhere.ApiKey)
+  inputs:
+    targetType: 'inline'
+    pwsh: true
+    script: |
+      $ErrorActionPreference = "Stop"
+
+      $scriptPath = "$(Build.SourcesDirectory)\pipeline\scripts\GetAuthToken.ps1"
+      Write-Host "Running script: $scriptPath"
+      $username = "$env:AutomationAnywhere_Username"
+      $apiKey = "$env:AutomationAnywhere_ApiKey"
+      $result = & $scriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -Username $username -ApiKey $apiKey
+      if ($result.Success) {
+        Write-Host "Access Token to AutomationAnywhere retrieved successfully"
+        Write-Host "##vso[task.setvariable variable=AccessToken]$($result.AccessToken)"
+      } else {
+        Write-Host "##vso[task.complete result=Failed;]DONE"
+      }  
+
+- task: PowerShell@2
+  name: import_bots
+  displayName: 'Import binary content into Automation Anywhere'
+  inputs:
+    targetType: 'inline'
+    pwsh: true
+    script: |
+      $ErrorActionPreference = "Stop"
+
+      $importScriptPath = "$(Build.SourcesDirectory)\pipeline\scripts\ImportBots.ps1"
+      Write-Host "Running script: $importScriptPath"
+      $importResult = & $importScriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -AccessToken $(AccessToken) -ArchivePath ${{ parameters.ArchivePath }} -ArchiveName ${{ parameters.ArchiveName }} -ArchivePassword ${{ parameters.ArchivePassword }}
+
+      if (!$importResult.Success) {
+        Write-Host "##vso[task.complete result=Failed;]DONE"
+        return
+      }
+
+      $statusScriptPath = "$(Build.SourcesDirectory)\pipeline\scripts\getImportExportStatus.ps1"
+      Write-Host "Running status script: $statusScriptPath"
+      $statusResult = & $statusScriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -RequestId $importResult.RequestId -AccessToken $(AccessToken)
+      $retryCount = 0
+      while ($true) {
+        $retryCount++
+        if ($statusResult.Status -eq "Completed") {
+          break;
+        } elseif ($statusResult.Status -eq "Failed") {
+          Write-Host "##vso[task.complete result=Failed;]DONE"
+          return
+        } else {
+          Write-Host "Waiting for import to complete..."
+          Start-Sleep -Seconds 10
+          $statusResult = & $statusScriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -RequestId $importResult.RequestId -AccessToken $(AccessToken)
+        }
+
+        if ($retryCount -gt 10) {
+          Write-Host "##vso[task.complete result=Failed;]DONE"
+          return
+        }
+      }

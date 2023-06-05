@@ -1,0 +1,168 @@
+name: AutomationAnywherePipeline$(Date:yyyyMMdd)$(Rev:.r)
+
+trigger: none
+
+parameters:
+  - name: BotIds
+    type: string
+    displayName: 'Comma separated list of Bot Ids'
+
+pr: none
+
+pool:
+  vmImage: 'windows-latest'
+
+stages:
+- stage: Export
+  displayName: 'Export Bots from Dev Control Room'
+  variables:
+    - group: 'AutomationAnywhere.DEV'
+
+  jobs:
+  - job: ExportBots
+    displayName: 'Authenticate to Dev, Export Bots'
+    steps: 
+      - task: PowerShell@2
+        name: Authenticate
+        displayName: 'Get Dev Authentication Token'
+        env:
+          AutomationAnywhere_Username: $(AutomationAnywhere.Username)
+          AutomationAnywhere_ApiKey: $(AutomationAnywhere.ApiKey)
+        inputs:
+          pwsh: true
+          targetType: 'inline'
+          script: |
+            $ErrorActionPreference = "Stop"
+            
+            $scriptPath = "$(Build.SourcesDirectory)\pipeline\scripts\GetAuthToken.ps1"
+            Write-Host "Running script: $scriptPath"
+            $username = "$env:AutomationAnywhere_Username"
+            $apiKey = "$env:AutomationAnywhere_ApiKey"
+            $result = & $scriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -Username $username -ApiKey $apiKey
+            if ($result.Success) {
+              Write-Host "Access Token to AutomationAnywhere retrieved successfully"
+              Write-Host "##vso[task.setvariable variable=AccessToken]$($result.AccessToken)"
+            } else {
+              Write-Host "##vso[task.complete result=Failed;]DONE"
+            }
+
+      - task: PowerShell@2
+        name: Export
+        displayName: 'Export and Download the bot'
+        inputs:
+          pwsh: true
+          targetType: 'inline'
+          script: |
+            $ErrorActionPreference = "Stop"
+
+            $exportScriptPath = "$(Build.SourcesDirectory)\pipeline\scripts\ExportBots.ps1"
+            Write-Host "Running export script: $exportScriptPath"
+
+            $botIds = ${{ parameters.BotIds }}
+            if ($botIds -is [array]) {
+                $botIdsString = $botIds -join ","
+            } else {
+                $botIdsString = $botIds
+            }
+
+            $exportResult = & $exportScriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -BotIds $botIdsString -AccessToken $(AccessToken)
+            if(!$exportResult.Success) {
+              Write-Host "##vso[task.complete result=Failed;]DONE"
+              return
+            }
+
+            $statusScriptPath = "$(Build.SourcesDirectory)\pipeline\scripts\getImportExportStatus.ps1"
+            Write-Host "Running status script: $statusScriptPath"
+            $statusResult = & $statusScriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -RequestId $exportResult.RequestId -AccessToken $(AccessToken)
+
+            $retryCount = 0
+            while ($true) {
+              $retryCount++
+              if ($statusResult.Status -eq "Completed") {
+                break;
+              } elseif ($statusResult.Status -eq "Failed") {
+                Write-Host "##vso[task.complete result=Failed;]DONE"
+                return
+              } else {
+                Write-Host "Waiting for export to complete..."
+                Start-Sleep -Seconds 10
+                $statusResult = & $statusScriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -RequestId $exportResult.RequestId -AccessToken $(AccessToken)
+              }
+
+              if ($retryCount -gt 10) {
+                Write-Host "##vso[task.complete result=Failed;]DONE"
+                return
+              }
+            }
+            
+            $downloadFileId = $statusResult.DownloadFileId
+            $downloadScriptPath = "$(Build.SourcesDirectory)\pipeline\scripts\downloadExportedBots.ps1"
+            Write-Host "Running download script: $downloadScriptPath"
+            $downloadResult = & $downloadScriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -DownloadFileId $downloadFileId -PipelineWorkspace $(Pipeline.Workspace) -AccessToken $(AccessToken)
+            if ($downloadResult.Success) {
+              Write-Host "##vso[task.setvariable variable=ArchiveFileId;isOutput=true]$downloadFileId"
+              Write-Host "##vso[task.setvariable variable=ArchivePassword;isOutput=true]$($exportResult.ArchivePassword)"
+            } else {
+              Write-Host "HTTP request failed with status code: $($downloadResponse.StatusCode)"
+              Write-Host "##vso[task.complete result=Failed;]DONE"
+            }
+
+      - task: PublishBuildArtifacts@1
+        name: Publish
+        displayName: 'Publish the exported bot'
+        inputs:
+          pathtoPublish: '$(Pipeline.Workspace)\$(Export.ArchiveFileId).zip' 
+          artifactName: 'Bot'
+          publishLocation: 'Container'
+
+- stage: UAT
+  displayName: 'Import Bots to UAT Control Room'
+  dependsOn:
+    - Export
+  condition: succeeded()
+  variables:
+    - group: 'AutomationAnywhere.UAT'
+    - name: ArchiveFileId
+      value: $[ stageDependencies.Export.ExportBots.outputs['Export.ArchiveFileId'] ]
+    - name: ArchivePassword
+      value: $[ stageDependencies.Export.ExportBots.outputs['Export.ArchivePassword'] ]
+  
+  jobs:
+  - deployment: uat
+    environment: 'AutomationAnywhere_UAT'
+    strategy:
+      runOnce:
+        deploy:          
+          steps:
+            - template: 'import.yml'
+              parameters:
+                ControlRoomName: 'UAT'
+                ArchivePath: $(Pipeline.Workspace)\Bot\$(ArchiveFileId).zip
+                ArchiveName: $(ArchiveFileId).zip
+                ArchivePassword: $(ArchivePassword)
+
+- stage: PROD
+  displayName: 'Import Bots to Production Control Room'
+  dependsOn:
+    - Export
+    - UAT
+  condition: succeeded()
+  variables:
+    - group: 'AutomationAnywhere.PROD'
+    - name: ArchiveFileId
+      value: $[ stageDependencies.Export.ExportBots.outputs['Export.ArchiveFileId'] ]
+    - name: ArchivePassword
+      value: $[ stageDependencies.Export.ExportBots.outputs['Export.ArchivePassword'] ]
+  jobs:
+  - deployment: prod
+    environment: 'AutomationAnywhere_PROD'
+    strategy:
+      runOnce:
+        deploy:          
+          steps:
+            - template: 'import.yml'
+              parameters:
+                ControlRoomName: 'PROD'
+                ArchivePath: $(Pipeline.Workspace)\Bot\$(ArchiveFileId).zip
+                ArchiveName: $(ArchiveFileId).zip
+                ArchivePassword: $(ArchivePassword)
