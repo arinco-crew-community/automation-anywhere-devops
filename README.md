@@ -1,8 +1,8 @@
 # Automation Anywhere DevOps
-This blog explains how to setup an Azure DevOps Pipeline for moving bots from Development Control Room to UAT and Production for Automation Anywhere 360 which is Automation Anywhere cloud offering.
+In this blog, we will explore how to build an Azure DevOps Pipeline for moving bots between Development Control Room and UAT/Production for Automation Anywhere 360, the cloud service offered by Automation Anywhere.
 
 ## What is Automation Anywhere
-Automation Anywhere in very simple terms is an RBA which stands for Robotic Process Automation. It provides lots of tools to automate repetetive tasks. Automation Anywhere is a complex RBA provider among many others but detailing its functionalities is beyound the scope of the blog article.
+In simple terms, Automation Anywhere is a Robotic Process Automation (RPA) solution that offers numerous tools to automate repetitive tasks. Although it's a more complex RPA provider, a detailed exploration of its functionalities falls outside the purview of this blog article.
 
 If you like reading documentations, Automation Anywhere itself has a lot to say in [their docs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/product-feature-lifecycle/learn-overview.html)
 
@@ -10,13 +10,13 @@ If you enjoy watching video courses, I think for the most part the videos from Y
 
 ## Why we need DevOps Pipeline
 
-Automation Anywhere 360 gives users the ability to create bots, run them, version them or roll back to an older version using built-in life cycle management. However all of these are within the context of one Control Room. Organisations usually have separate control rooms to manage user access and make development versions separate from Production which are consumed by real consumers.
+Automation Anywhere 360 allows users to design, execute, and manage versions of bots using integrated lifecycle management within a single Control Room. However, in practice, organizations often use multiple Control Rooms to segregate user access and differentiate between development and production versions, the latter being used by actual consumers.
 
-In the case of this article, the Customer has 3 separate environments (Control Rooms) and would like to Export, the bots that are complete and ready for production use from Dev to their UAT Control Room while they further get tested. Once they are sure that it works based on their requirements in UAT Control Room then they move it to Production.
+In this particular scenario, the customer utilizes three distinct environments (Control Rooms): Development, User Acceptance Testing (UAT), and Production. Completed bots are initially exported from the Development environment to the UAT Control Room for further testing. Once they meet the customer's requirements in the UAT environment, they are then moved to the Production Control Room for actual use.
 
 ![Bot Life Cycle Management Overview](BLMoverviewdiagram.png)
 
-Out of the box Automation Anywhere has its own source control to manage the data, files and other artifacts within a simple Control Room. It also providers `Remote Git Repository Integration` in order to enable users to use a different source control like Azure DevOps
+Automation Anywhere comes with its own built-in source control system for managing data, files, and other resources within a single Control Room. Additionally, it offers a `Remote Git Repository Integration` feature, allowing users to utilize alternative source control systems, such as Azure DevOps.
 
 ![Remote Git Repository Integration](RemoteGitRepoIntegration.png)
 
@@ -39,7 +39,7 @@ In order to move bots from one Automation Anywhere Control Room to another for e
 
 ### Authentication
 Authentication can be done either with combination of `username` and `apiKey` or `username` and `password`.
-For the purpose of this Sample DevOps pipeline we are using API Key.
+For the purpose of this Sample DevOps pipeline we are using `username` and `apiKey`.
 In order to create an API Key, I asked that my user(used for DevOps) has access to Generate API Keys.
 Users in Automation Anywhere are granted access to different features using RBAC which is role-based-access-control. So my user is granted a role which can generate API Keys
 Also the API key is only valid by 45 days but this settings can be changed in Automation Anywhere settings.
