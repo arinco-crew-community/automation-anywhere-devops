@@ -19,8 +19,58 @@ As for my exploration, `Remote Git Repository Integration` can be used as an alt
 This article: [Bot Lifecycle Management: Bring Calm to Your Bot Development Chaos](https://www.automationanywhere.com/company/blog/product-insights/bot-lifecycle-management-bring-calm-to-your-bot-development-chaos) discuss in details the differences between BLM and DevOps for Automation Anywhere
 
 ## DevOps steps
-In order to move bots from one Automation Anywhere Control Room to another for example dev to uat, you need to use [Control Room APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/control-room-api/cloud-control-room-apis.html)
+In order to move bots from one Automation Anywhere Control Room to another for example dev to uat, you need to use [Control Room APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/control-room-api/cloud-control-room-apis.html). This page gives an introduction to control room API and it also include a postman collection which can be used as a playground to understand the API cababilities better
 
+1. Authenticate to source Control Room (using [Authentication API](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/auth-api-supported.html))
+2. Create a request to Export Bot(s) with their Id as a zipped package potentially with as a password protected package (using BLM EXPORT API)
+3. Prediodically check the status of the export request until it returns `COMPLETED` (using BLM Check Import/Export Status API)
+4. Download the generated zip file (using BLM Downloand API)
+5. Authenticate to destination Control Room (using Authentication API)
+6. Create an Import Bot(s) Request (using BLM Import API)
+7. Prediodically check the status of the import request until it returns `COMPLETED` (using BLM Check Import/Export Status API)
+8. Once the Status API returns `COMPLETED`, it means that the DevOps operation has been successful
+
+### Authentication
+Authentication can be done either with combination of `username` and `apiKey` or `username` and `password`.
+For the purpose of this Sample DevOps pipeline we are using API Key.
+In order to create an API Key, I asked that my user(used for DevOps) has access to Generate API Keys.
+Users in Automation Anywhere are granted access to different features using RBAC which is role-based-access-control. So my user is granted a role which can generate API Keys
+
+![Generate API Key Permission](GenerateApiKeyPermission.png)
+
+So I went ahead and created and API Key under my user settings
+
+![Generate API Key in UI](GenerateApiKeyInUI.png)
+
+These simple steps enable you to login and receive the token required for the other steps over the same Control Room.
+
+The request to Authenticate if successful returns token with some additional information about the logged in user and their permissions
+
+![Authenticate to Control Room](Authentication.png)
+
+### Export Request
+Export Request is a BML API Request which results in a 202 immediate response if successful.
+In order to initiate this request the user must have Export bots, View package, and Check in or Check out permissions to the required folders
+
+![Export Bots API](ExportBots.png)
+The `requestId` in the response can be used for further steps to get status and download the results
+
+### Export Status
+Import/Export status are the same API and just indicate whether the operation has been successful or pending or failed altogether. What we are looking for is a 200 HttpStatus code with a `Status` of `COMPLETED` in the JSON body of the response
+
+![Import/Export Status](ImportExportStatus.png)
+
+### Download Exported Bots
+Using the `requestId` provided in the export request response, the content of the bots can be downloaded as a zip file (password-protected if it was given an `achivePassword` in the export request)
+
+![Download Bots](DownloadBots.png)
+
+### Import Request
+As mentioned before now that the bots contents are downloaded, the next steps are authentication to the new control room API and sending a request to import downloaded zip file
+
+There is one major difference between this API and the rest of the API calls. The request body is `form-data` which has its own challenges in DevOps calls
+
+![Import Bots](ImportBots.png)
 
 ## Additional Resources
 
