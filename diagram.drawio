@@ -1,0 +1,168 @@
+<mxfile host="app.diagrams.net" modified="2023-06-05T08:54:56.369Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36 Edg/114.0.1823.37" etag="V4DqiPgxUUYMJm_ElszO" version="21.2.9" type="device">
+  <diagram name="Page-1" id="iU7_hYt2CO3HojF6PmOF">
+    <mxGraphModel dx="1683" dy="937" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-1" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="281" y="1010" as="sourcePoint" />
+            <mxPoint x="281" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-2" value="" style="endArrow=none;dashed=1;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="559" y="990" as="sourcePoint" />
+            <mxPoint x="557" y="118" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-4" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;DEV Control Room&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="41" y="125" width="230" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-5" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;UAT Control Room&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="308" y="125" width="220" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-6" value="&lt;font style=&quot;font-size: 24px;&quot;&gt;Prod Control Room&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="583" y="125" width="230" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-9" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-7" target="8a4uDkxFIOLA-M8K5NAJ-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-7" value="Develop Bots in Dev" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="184" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-8" target="8a4uDkxFIOLA-M8K5NAJ-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-15" value="NO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="8a4uDkxFIOLA-M8K5NAJ-14">
+          <mxGeometry x="0.1315" y="2" relative="1" as="geometry">
+            <mxPoint y="10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-8" target="8a4uDkxFIOLA-M8K5NAJ-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-8" value="Is bot ready for test?" style="rhombus;whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="81.25" y="270" width="147.5" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-16" target="8a4uDkxFIOLA-M8K5NAJ-19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-16" value="Initiate Pipeline Manually" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="80" y="407" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-26" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-19" target="8a4uDkxFIOLA-M8K5NAJ-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-19" value="Authenticate to Dev Control Room" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="480" width="210" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-21" value="YES" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="69" y="230" as="geometry">
+            <mxPoint x="88" y="147" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-29" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-22" target="8a4uDkxFIOLA-M8K5NAJ-25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-22" value="Check Export Status" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="630" width="210" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-27" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-24" target="8a4uDkxFIOLA-M8K5NAJ-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-24" value="Export Bots API Request" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="553" width="210" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-25" target="8a4uDkxFIOLA-M8K5NAJ-22">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="31" y="750" />
+              <mxPoint x="31" y="650" />
+              <mxPoint x="50" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-31" value="Yes, wait for 10 sec" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="8a4uDkxFIOLA-M8K5NAJ-30">
+          <mxGeometry x="0.0358" relative="1" as="geometry">
+            <mxPoint x="30" y="-3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-33" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-25" target="8a4uDkxFIOLA-M8K5NAJ-32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-25" value="Is pending export?" style="rhombus;whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="81.25" y="710" width="147.5" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-38" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-32" target="8a4uDkxFIOLA-M8K5NAJ-37">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-40" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-32" target="8a4uDkxFIOLA-M8K5NAJ-39">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-32" value="Is export successful?" style="rhombus;whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="81.25" y="820" width="147.5" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-37" value="" style="shape=waypoint;sketch=0;size=6;pointerEvents=1;points=[];fillColor=default;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="21" y="850" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-39" target="8a4uDkxFIOLA-M8K5NAJ-66">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-39" value="Download Exported Bot Package" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="50" y="940" width="210" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-41" value="Same steps are being followed for production Deployment" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="593" y="184" width="210" height="746" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-62" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-43" target="8a4uDkxFIOLA-M8K5NAJ-61">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-43" value="Import Bots API Request" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="320" y="261" width="210" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-45" value="Approve Deployment Request to Production" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="320" y="940" width="210" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-64" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-47" target="8a4uDkxFIOLA-M8K5NAJ-50">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-47" value="Is pending import?" style="rhombus;whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="351" y="430" width="147.5" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-55" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-50" target="8a4uDkxFIOLA-M8K5NAJ-54">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="425" y="670" />
+              <mxPoint x="425" y="670" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-50" value="Is import successful?" style="rhombus;whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="351" y="557" width="147.5" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-60" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-54" target="8a4uDkxFIOLA-M8K5NAJ-59">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-54" value="Test The Imported Bots in UAT by Humans?" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="320" y="690" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-65" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-59" target="8a4uDkxFIOLA-M8K5NAJ-45">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-59" value="Is Bot Ready for Production?" style="rhombus;whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="351" y="810" width="147.5" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-63" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8a4uDkxFIOLA-M8K5NAJ-61" target="8a4uDkxFIOLA-M8K5NAJ-47">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-61" value="Check Import Status" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="320" y="354" width="210" height="39" as="geometry" />
+        </mxCell>
+        <mxCell id="8a4uDkxFIOLA-M8K5NAJ-66" value="Authenticate to UAT Control Room" style="whiteSpace=wrap;html=1;rounded=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="330" y="194" width="210" height="39" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

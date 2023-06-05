@@ -28,6 +28,10 @@ Automation Anywhere provides REST APIs to enable automation of bot life cycle ma
 ## DevOps steps
 In order to move bots from one Automation Anywhere Control Room to another for example dev to uat, you need to use [Control Room APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/control-room-api/cloud-control-room-apis.html). This page gives an introduction to control room API and it also include a postman collection which can be used as a playground to understand the API cababilities better
 
+The diagram below shows steps to accomplish deployment of bots from Dev to UAT and then after approval to production
+
+![Deployment Process](DeploymentSteps.png)
+
 1. Authenticate to source Control Room (using [Authentication API](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/auth-api-supported.html))
 2. Create a request to Export Bot(s) with their Id as a zipped package potentially with as a password protected package (using BLM EXPORT API)
 3. Prediodically check the status of the export request until it returns `COMPLETED` (using BLM Check Import/Export Status API)
