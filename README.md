@@ -20,7 +20,10 @@ Out of the box Automation Anywhere has its own source control to manage the data
 
 ![Remote Git Repository Integration](RemoteGitRepoIntegration.png)
 
-`Remote Git Repository Integration` however, does not have any features to package bots from one control room and move them to another. For this reason, we use Azure DevOps pipeline to automate API calls which are used for Packaging, exporting and importing bots from a control room to another.
+`Remote Git Repository Integration` however, does not have any features to package bots from one control room and move them to another.
+The user interface of the control gives users the ability to manually export bots and then if they login to another control room they can import the packaged bots. This has caused a lot of confusion for the customer as people at random export and import bots causing the previosly running bots to fail in production.
+
+Automation Anywhere provides REST APIs to enable automation of bot life cycle management. And in the rest of this article, I will explain how to use the provided APIs to export desired bots and import them to the other control rooms.
 
 ## DevOps steps
 In order to move bots from one Automation Anywhere Control Room to another for example dev to uat, you need to use [Control Room APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/control-room-api/cloud-control-room-apis.html). This page gives an introduction to control room API and it also include a postman collection which can be used as a playground to understand the API cababilities better
