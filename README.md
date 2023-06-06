@@ -35,11 +35,11 @@ The diagram below shows steps to accomplish deployment of bots from Dev to UAT a
 ## Deployment Process
 1. After bots are properly deployed and tested in the **development control room**, the pipeline is manually initiated using a list of comma-separated bot IDs.
 
-2. First, the pipeline authenticates to the **development Control Room** using the Control Room API. (For more information, see [Authentication](#authentication)).
+2. First, the pipeline authenticates to the **development Control Room**. (For more information, see [Authentication](#authentication)).
 
-3. Following authentication, it creates a request to export bot(s) using their IDs, packaging them into a zip file, potentially with password protection. (For more information, see [Export Request](#export-request)).
+3. Following authentication, it creates a request to export bot(s). (For more information, see [Export Request](#export-request)).
 
-4. Since the export request is asynchronous, the pipeline periodically calls the `Check Import/Export Status API` of the Control Room until it returns `COMPLETED`. (For more information, see [Import/Export Status](#importexport-status)).
+4. Since the export request is asynchronous, the pipeline periodically checks export status. (For more information, see [Import/Export Status](#importexport-status)).
 
 5. Once the package is ready in the **development Control Room**, the pipeline downloads the generated zip file using the Control Room API, and uploads it to Azure DevOps artifacts. (For more information, see [Download Exported Bots](#download-exported-bots)).
 
@@ -47,9 +47,7 @@ The diagram below shows steps to accomplish deployment of bots from Dev to UAT a
 
 7. After downloading the artifact, the pipeline creates an asynchronous Import Bot(s) Request. (For more information, see [Import Request](#import-request)).
 
-8. The pipeline then needs to periodically check the status of the import request until it returns `COMPLETED`.
-
-9. Once the Status API returns `COMPLETED`, it signifies the successful completion of the DevOps operation.
+8. The pipeline then needs to periodically check the status of the import request until it is successfully done.
 
 ### Authentication
 Authentication can be achieved using either a combination of username and apiKey, or username and password. For the purposes of this sample DevOps pipeline, we are utilizing the username and apiKey method.
