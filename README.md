@@ -32,21 +32,31 @@ The diagram below shows steps to accomplish deployment of bots from Dev to UAT a
 
 ![Deployment Process](DeploymentSteps.png)
 
-1. Authenticate to source Control Room. (Go to [Authentication](#authentication) for more information)
-2. Create a request to Export Bot(s) with their Id as a zipped package potentially with as a password protected package. (Go to [Export Request](#export-request) for more information)
-3. Prediodically check the status of the export request until it returns `COMPLETED`. (Go to [Import/Export Status](#importexport-status) for more information)
-4. Download the generated zip file. (Go to [Download Exported Bots](#download-exported-bots) for more information)
-5. Authenticate to destination Control Room.
-6. Create an Import Bot(s) Request. (Go to [Import Request](#import-request) for more information)
-7. Prediodically check the status of the import request until it returns `COMPLETED`.
-8. Once the Status API returns `COMPLETED`, it means that the DevOps operation has been successful
+## Deployment Process
+1. After bots are properly deployed and tested in the **development control room**, the pipeline is manually initiated using a list of comma-separated bot IDs.
+
+2. First, the pipeline authenticates to the **development Control Room** using the Control Room API. (For more information, see [Authentication](#authentication)).
+
+3. Following authentication, it creates a request to export bot(s) using their IDs, packaging them into a zip file, potentially with password protection. (For more information, see [Export Request](#export-request)).
+
+4. Since the export request is asynchronous, the pipeline periodically calls the `Check Import/Export Status API` of the Control Room until it returns `COMPLETED`. (For more information, see [Import/Export Status](#importexport-status)).
+
+5. Once the package is ready in the **development Control Room**, the pipeline downloads the generated zip file using the Control Room API, and uploads it to Azure DevOps artifacts. (For more information, see [Download Exported Bots](#download-exported-bots)).
+
+6. Next, the pipeline authenticates to the **destination Control Room** (UAT or Prod) to obtain a new access token.
+
+7. After downloading the artifact, the pipeline creates an asynchronous Import Bot(s) Request. (For more information, see [Import Request](#import-request)).
+
+8. The pipeline then needs to periodically check the status of the import request until it returns `COMPLETED`.
+
+9. Once the Status API returns `COMPLETED`, it signifies the successful completion of the DevOps operation.
 
 ### Authentication
-Authentication can be done either with combination of `username` and `apiKey` or `username` and `password`.
-For the purpose of this Sample DevOps pipeline we are using `username` and `apiKey`.
-In order to create an API Key, I asked that my user(used for DevOps) has access to Generate API Keys.
-Users in Automation Anywhere are granted access to different features using RBAC which is role-based-access-control. So my user is granted a role which can generate API Keys
-Also the API key is only valid by 45 days but this settings can be changed in Automation Anywhere settings.
+Authentication can be achieved using either a combination of username and apiKey, or username and password. For the purposes of this sample DevOps pipeline, we are utilizing the username and apiKey method.
+
+To generate an API Key, it's essential that the user account, which is being used for DevOps, has the privilege to generate API Keys. User privileges in Automation Anywhere are governed by Role-Based Access Control (RBAC), meaning that my user account has been assigned a role that permits the generation of API Keys.
+
+It's important to note that the API key has a default validity period of **45 days**. However, this duration can be customized in the Automation Anywhere settings.
 
 
 ![Generate API Key Permission](GenerateApiKeyPermission.png)
@@ -62,48 +72,53 @@ The request to Authenticate if successful returns token with some additional inf
 ![Authenticate to Control Room](Authentication.png)
 
 ### Export Request
-Export Request is a BML API Request which results in a 202 immediate response if successful.
-In order to initiate this request the user must have Export bots, View package, and Check in or Check out permissions to the required folders
+The Export Request is a Bot LifeCycle Management (BLM) API request, which, upon successful initiation, immediately returns a 202 response. To trigger this request, the user must possess the following permissions for the necessary folders: "Export bots", "View package", and "Check in or Check out".
 
 ![Export Bots API](ExportBots.png)
-The `requestId` in the response can be used for further steps to get status and download the results
+The requestId provided in the response can be utilized in subsequent steps to both retrieve the status and download the resulting output.
 
 ### Import/Export Status
-Import/Export status are the same API and just indicate whether the operation has been successful or pending or failed altogether. What we are looking for is a 200 HttpStatus code with a `Status` of `COMPLETED` in the JSON body of the response
+The Import/Export status is tracked via the same API and simply indicates the status of the operation, whether it's successful, pending, or has failed. The goal is to receive a 200 HTTP status code, with a `Status` value of `COMPLETED` in the JSON body of the response.
 
 ![Import/Export Status](ImportExportStatus.png)
 
 ### Download Exported Bots
-Using the `requestId` provided in the export request response, the content of the bots can be downloaded as a zip file (password-protected if it was given an `achivePassword` in the export request)
+Using the `requestId` obtained from the export request response, the content of the bots can be downloaded in a zip file format. If an archivePassword was provided during the export request, the downloaded zip file will be password-protected.
 
 ![Download Bots](DownloadBots.png)
 
 ### Import Request
-As mentioned before now that the bots contents are downloaded, the next steps are authentication to the new control room API and sending a request to import downloaded zip file
+As previously discussed, once the bot contents have been downloaded, the subsequent steps involve authenticating with the new control room API and sending a request to import the downloaded zip file.
 
-There is one major difference between this API and the rest of the API calls. The request body is `form-data` which has its own challenges in DevOps calls
+One key distinction with this API compared to others is that the request body uses `form-data`. This presents its own set of unique challenges when making DevOps calls.
 
 ![Import Bots](ImportBots.png)
 
 ## Sample Pipeline
-The sample pipeline is written for Azure DevOps using `windows-latest` and Powershell for doing the API calls.
+The sample pipeline is designed for `Azure DevOps`, utilizing the `windows-latest` and `PowerShell` for API calls.
 
-This is a multi-staged pipeline to zip the given botIds from the Dev Stage and import them into UAT and then Prod environments.
+This pipeline is multi-staged; its function is to zip the specified botIds from the Development stage, then import them into the User Acceptance Testing (UAT) and Production (Prod) environments.
 
-In order for it to work 3 environment libraries are needed with these values:
+For successful operation, three environment libraries are required with the following values:
+
 - AutomationAnywhere.Url
 - AutomationAnywhere.Username
 - AutomationAnywhere.ApiKey
 
-The pipeline also needs 2 environments for managing approval process so it gives the administartors the ability to validate the zipped file before importing them into UAT and Prod environments.
+Furthermore, the pipeline requires two environments for managing the approval process. This provision grants administrators the capability to validate the zipped file prior to its import into the UAT and Prod environments.
 
 ## Further steps
-The sample Pipeline depends on providing a comma-seperated list of BotIds for it to work. However this is a very initial and simple pipeline.
-One possible way to bring about more functionality is provide the users the ability to provide a web application with the following functionalities
-- List all existing Bots in the form of folder structure as they are shown in Control Room so user can select them.
-- Giving more information about the bots as for example whether they are checked out, who developed them etc.
+The sample pipeline relies on receiving a comma-separated list of BotIds to function. However, it's important to note that this is a simplistic and initial pipeline.
 
-For the purpose of this extra work, [Repository Management APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/repository-management-api.html) can be used to list files, folders or workspace information
+To enhance its functionality, one approach might be to provide users with a web application that offers the following features:
+
+- Display all existing bots in the form of a folder structure, mirroring their presentation in the Control Room, so users can easily select them.
+
+- Provide additional information about the bots, such as their check-out status, the developer responsible for them, and so on.
+
+These enhancements would make `bot life cycle management` more robust and user-friendly.
+
+To achieve these enhancements, you can utilize the [Repository Management APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/repository-management-api.html). These APIs can be used to fetch information on files, folders, or workspace details, which can be instrumental in listing all existing bots in a structured format and offering more detailed bot information.
 
 
 ## Additional Resources
