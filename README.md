@@ -32,13 +32,13 @@ The diagram below shows steps to accomplish deployment of bots from Dev to UAT a
 
 ![Deployment Process](DeploymentSteps.png)
 
-1. Authenticate to source Control Room (using [Authentication API](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/auth-api-supported.html))
-2. Create a request to Export Bot(s) with their Id as a zipped package potentially with as a password protected package (using BLM EXPORT API)
-3. Prediodically check the status of the export request until it returns `COMPLETED` (using BLM Check Import/Export Status API)
-4. Download the generated zip file (using BLM Downloand API)
-5. Authenticate to destination Control Room (using Authentication API)
-6. Create an Import Bot(s) Request (using BLM Import API)
-7. Prediodically check the status of the import request until it returns `COMPLETED` (using BLM Check Import/Export Status API)
+1. Authenticate to source Control Room. (Go to [Authentication](#authentication) for more information)
+2. Create a request to Export Bot(s) with their Id as a zipped package potentially with as a password protected package. (Go to [Export Request](#export-request) for more information)
+3. Prediodically check the status of the export request until it returns `COMPLETED`. (Go to [Import/Export Status](#importexport-status) for more information)
+4. Download the generated zip file. (Go to [Download Exported Bots](#download-exported-bots) for more information)
+5. Authenticate to destination Control Room.
+6. Create an Import Bot(s) Request. (Go to [Import Request](#import-request) for more information)
+7. Prediodically check the status of the import request until it returns `COMPLETED`.
 8. Once the Status API returns `COMPLETED`, it means that the DevOps operation has been successful
 
 ### Authentication
@@ -68,7 +68,7 @@ In order to initiate this request the user must have Export bots, View package, 
 ![Export Bots API](ExportBots.png)
 The `requestId` in the response can be used for further steps to get status and download the results
 
-### Export Status
+### Import/Export Status
 Import/Export status are the same API and just indicate whether the operation has been successful or pending or failed altogether. What we are looking for is a 200 HttpStatus code with a `Status` of `COMPLETED` in the JSON body of the response
 
 ![Import/Export Status](ImportExportStatus.png)
