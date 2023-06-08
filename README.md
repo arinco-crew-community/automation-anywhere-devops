@@ -2,6 +2,8 @@
 
 In this blog, we will explore how to build an Azure DevOps Pipeline for moving bots between Development Control Room and UAT/Production for Automation Anywhere 360, the cloud service offered by Automation Anywhere.
 
+The code and the content of this blog is also available on [Arinco Community GitHub](https://github.com/arinco-crew-community/automation-anywhere-devops)
+
 ## What is Automation Anywhere
 
 In simple terms, Automation Anywhere is a Robotic Process Automation (RPA) solution that offers numerous tools to automate repetitive tasks. Although it's a more complex RPA provider, a detailed exploration of its functionalities falls outside the purview of this blog article.
@@ -39,21 +41,21 @@ The diagram below shows steps to accomplish deployment of bots from Dev to UAT a
 
 1. After bots are properly deployed and tested in the **development control room**, the pipeline is manually initiated using a list of comma-separated bot IDs.
 
-2. First, the pipeline authenticates to the **development Control Room**. (For more information, see [Authentication](#authentication)).
+2. First, [the pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) authenticates to the **development Control Room**. (For more information, see [Authentication](#authentication)).
 
 3. Following authentication, it requests information about the given bot(s). (For more information, see [Get Bots Information](#get-bots-information)).
 
 4. As the next setp, it creates a request to export bot(s). (For more information, see [Export Request](#export-request)).
 
-5. Since the export request is asynchronous, the pipeline periodically checks export status. (For more information, see [Import/Export Status](#importexport-status)).
+5. Since the export request is asynchronous, [the pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) periodically checks export status. (For more information, see [Import/Export Status](#importexport-status)).
 
-6. Once the package is ready in the **development Control Room**, the pipeline downloads the generated zip file using the Control Room API, and uploads it to Azure DevOps artifacts. (For more information, see [Download Exported Bots](#download-exported-bots)).
+6. Once the package is ready in the **development Control Room**, [the pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) downloads the generated zip file using the Control Room API, and uploads it to Azure DevOps artifacts. (For more information, see [Download Exported Bots](#download-exported-bots)).
 
-7. Next, the pipeline authenticates to the **destination Control Room** (UAT or Prod) to obtain a new access token.
+7. Next, [the pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) authenticates to the **destination Control Room** (UAT or Prod) to obtain a new access token.
 
-8. After downloading the artifact, the pipeline creates an asynchronous Import Bot(s) Request. (For more information, see [Import Request](#import-request)).
+8. After downloading the artifact, [the pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) creates an asynchronous Import Bot(s) Request. (For more information, see [Import Request](#import-request)).
 
-9. The pipeline then needs to periodically check the status of the import request until it is successfully done.
+9. [The pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) then needs to periodically check the status of the import request until it is successfully done.
 
 ### Authentication
 
@@ -110,9 +112,9 @@ One key distinction with this API compared to others is that the request body us
 
 ## Sample Pipeline
 
-The sample pipeline is designed for `Azure DevOps`, utilizing the `windows-latest` and `PowerShell` for API calls.
+[The sample pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) is designed for `Azure DevOps`, utilizing the `windows-latest` and `PowerShell` for API calls.
 
-This pipeline is multi-staged; its function is to zip the specified botIds from the Development stage, then import them into the User Acceptance Testing (UAT) and Production (Prod) environments.
+[This pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) is multi-staged; its function is to zip the specified botIds from the Development stage, then import them into the User Acceptance Testing (UAT) and Production (Prod) environments.
 
 For successful operation, three environment libraries are required with the following values:
 
@@ -120,11 +122,11 @@ For successful operation, three environment libraries are required with the foll
 - AutomationAnywhere.Username
 - AutomationAnywhere.ApiKey
 
-Furthermore, the pipeline requires two environments for managing the approval process. This provision grants administrators the capability to validate the zipped file prior to its import into the UAT and Prod environments.
+Furthermore, [the pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) requires two environments for managing the approval process. This provision grants administrators the capability to validate the zipped file prior to its import into the UAT and Prod environments.
 
 ## Further steps
 
-The sample pipeline relies on receiving a comma-separated list of BotIds to function. However, it's important to note that this is a simplistic and initial pipeline.
+[The sample pipeline](https://github.com/arinco-crew-community/automation-anywhere-devops/blob/fd591a4e977f5ec79f00595fe40090da348c3b63/pipeline/azure-pipelines.yml) relies on receiving a comma-separated list of BotIds to function. However, it's important to note that this is a simplistic and initial pipeline.
 
 To enhance its functionality, one approach might be to provide users with a web application that offers the following features:
 
