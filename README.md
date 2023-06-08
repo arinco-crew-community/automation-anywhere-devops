@@ -1,7 +1,9 @@
 # Automation Anywhere Azure DevOps Pipeline
+
 In this blog, we will explore how to build an Azure DevOps Pipeline for moving bots between Development Control Room and UAT/Production for Automation Anywhere 360, the cloud service offered by Automation Anywhere.
 
 ## What is Automation Anywhere
+
 In simple terms, Automation Anywhere is a Robotic Process Automation (RPA) solution that offers numerous tools to automate repetitive tasks. Although it's a more complex RPA provider, a detailed exploration of its functionalities falls outside the purview of this blog article.
 
 If you like reading documentations, Automation Anywhere itself has a lot to say in [their docs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/product-feature-lifecycle/learn-overview.html)
@@ -26,6 +28,7 @@ The user interface of the control gives users the ability to manually export bot
 Automation Anywhere provides REST APIs to enable automation of bot life cycle management. And in the rest of this article, I will explain how to use the provided APIs to export desired bots and import them to the other control rooms.
 
 ## DevOps steps
+
 In order to move bots from one Automation Anywhere Control Room to another for example dev to uat, you need to use [Control Room APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/control-room-api/cloud-control-room-apis.html). This page gives an introduction to control room API and it also include a postman collection which can be used as a playground to understand the API cababilities better
 
 The diagram below shows steps to accomplish deployment of bots from Dev to UAT and then after approval to production
@@ -33,6 +36,7 @@ The diagram below shows steps to accomplish deployment of bots from Dev to UAT a
 ![Deployment Process](DeploymentSteps.png)
 
 ## Deployment Process
+
 1. After bots are properly deployed and tested in the **development control room**, the pipeline is manually initiated using a list of comma-separated bot IDs.
 
 2. First, the pipeline authenticates to the **development Control Room**. (For more information, see [Authentication](#authentication)).
@@ -50,12 +54,12 @@ The diagram below shows steps to accomplish deployment of bots from Dev to UAT a
 8. The pipeline then needs to periodically check the status of the import request until it is successfully done.
 
 ### Authentication
+
 Authentication can be achieved using either a combination of username and apiKey, or username and password. For the purposes of this sample DevOps pipeline, we are utilizing the username and apiKey method.
 
 To generate an API Key, it's essential that the user account, which is being used for DevOps, has the privilege to generate API Keys. User privileges in Automation Anywhere are governed by Role-Based Access Control (RBAC), meaning that my user account has been assigned a role that permits the generation of API Keys.
 
 It's important to note that the API key has a default validity period of **45 days**. However, this duration can be customized in the Automation Anywhere settings.
-
 
 ![Generate API Key Permission](GenerateApiKeyPermission.png)
 
@@ -70,22 +74,26 @@ The request to Authenticate if successful returns token with some additional inf
 ![Authenticate to Control Room](Authentication.png)
 
 ### Export Request
+
 The Export Request is a Bot LifeCycle Management (BLM) API request, which, upon successful initiation, immediately returns a 202 response. To trigger this request, the user must possess the following permissions for the necessary folders: "Export bots", "View package", and "Check in or Check out".
 
 ![Export Bots API](ExportBots.png)
 The requestId provided in the response can be utilized in subsequent steps to both retrieve the status and download the resulting output.
 
 ### Import/Export Status
+
 The Import/Export status is tracked via the same API and simply indicates the status of the operation, whether it's successful, pending, or has failed. The goal is to receive a 200 HTTP status code, with a `Status` value of `COMPLETED` in the JSON body of the response.
 
 ![Import/Export Status](ImportExportStatus.png)
 
 ### Download Exported Bots
+
 Using the `requestId` obtained from the export request response, the content of the bots can be downloaded in a zip file format. If an archivePassword was provided during the export request, the downloaded zip file will be password-protected.
 
 ![Download Bots](DownloadBots.png)
 
 ### Import Request
+
 As previously discussed, once the bot contents have been downloaded, the subsequent steps involve authenticating with the new control room API and sending a request to import the downloaded zip file.
 
 One key distinction with this API compared to others is that the request body uses `form-data`. This presents its own set of unique challenges when making DevOps calls.
@@ -93,6 +101,7 @@ One key distinction with this API compared to others is that the request body us
 ![Import Bots](ImportBots.png)
 
 ## Sample Pipeline
+
 The sample pipeline is designed for `Azure DevOps`, utilizing the `windows-latest` and `PowerShell` for API calls.
 
 This pipeline is multi-staged; its function is to zip the specified botIds from the Development stage, then import them into the User Acceptance Testing (UAT) and Production (Prod) environments.
@@ -106,6 +115,7 @@ For successful operation, three environment libraries are required with the foll
 Furthermore, the pipeline requires two environments for managing the approval process. This provision grants administrators the capability to validate the zipped file prior to its import into the UAT and Prod environments.
 
 ## Further steps
+
 The sample pipeline relies on receiving a comma-separated list of BotIds to function. However, it's important to note that this is a simplistic and initial pipeline.
 
 To enhance its functionality, one approach might be to provide users with a web application that offers the following features:
@@ -118,10 +128,10 @@ These enhancements would make `bot life cycle management` more robust and user-f
 
 To achieve these enhancements, you can utilize the [Repository Management APIs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/repository-management-api.html). These APIs can be used to fetch information on files, folders, or workspace details, which can be instrumental in listing all existing bots in a structured format and offering more detailed bot information.
 
-
 ## Additional Resources
 
 ### Useful articles
+
 - [Bot Lifecycle Management: Bring Calm to Your Bot Development Chaos](https://www.automationanywhere.com/company/blog/product-insights/bot-lifecycle-management-bring-calm-to-your-bot-development-chaos)
 - [Create API key generation role](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/administration/roles/cloud-control-room-apikey-role.html)
 - [https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/control-room-api/cloud-control-room-apis.html](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/control-room-api/cloud-control-room-apis.html)
@@ -130,6 +140,7 @@ To achieve these enhancements, you can utilize the [Repository Management APIs](
 - [Integrating Control Room with Git repositories](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/git-integration/cloud-cr-git-integration.html)
 
 ### Youtube Videos
+
 - [Build Your First Automation 360 Bot with Micah Smith](https://www.youtube.com/watch?v=nMUIZx6eAJA&t=465s)
 - [Using Version Control in Automation 360 v.22](https://www.youtube.com/watch?v=_646qiId3no)
 - [Introduction to the Control Room API](https://www.youtube.com/watch?v=zv34BRfW96Y&t=10s)
