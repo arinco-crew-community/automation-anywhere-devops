@@ -10,7 +10,7 @@ In simple terms, Automation Anywhere is a Robotic Process Automation (RPA) solut
 
 If you like reading documentations, Automation Anywhere itself has a lot to say in [their docs](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/product-feature-lifecycle/learn-overview.html)
 
-If you enjoy watching video courses, I think for the most part the videos from Youtube have you covered, I have links to a number of them in [Additional Resources](#additional-resources) that you might want to check out
+If you enjoy watching video courses, I think for the most part the videos from YouTube have you covered, I have links to a number of them in [Additional Resources](#additional-resources) that you might want to check out
 
 ## Why we need DevOps Pipeline
 
@@ -151,7 +151,7 @@ To achieve these enhancements, you can utilize the [Repository Management APIs](
 - [Bot Lifecycle Management in Automation 360](https://community.automationanywhere.com/developers-blog-85009/bot-lifecycle-management-in-automation-360-85112)
 - [Integrating Control Room with Git repositories](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/enterprise-cloud/topics/control-room/git-integration/cloud-cr-git-integration.html)
 
-### Youtube Videos
+### YouTube Videos
 
 - [Build Your First Automation 360 Bot with Micah Smith](https://www.youtube.com/watch?v=nMUIZx6eAJA&t=465s)
 - [Using Version Control in Automation 360 v.22](https://www.youtube.com/watch?v=_646qiId3no)
