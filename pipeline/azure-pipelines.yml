@@ -7,6 +7,11 @@ parameters:
     type: string
     displayName: 'Comma separated list of Bot Ids'
 
+  - name: IncludePackages
+    type: boolean
+    displayName: 'Include packages'
+    default: false
+
 pr: none
 
 pool:
@@ -47,6 +52,40 @@ stages:
             }
 
       - task: PowerShell@2
+        name: ExtractBotsInfo
+        displayName: 'Extract Bots Info'
+        inputs:
+          pwsh: true
+          targetType: 'inline'
+          script: |
+            $ErrorActionPreference = "Stop"
+
+            $scriptPath = "$(Build.SourcesDirectory)\pipeline\scripts\GetBotsInfo.ps1"
+            Write-Host "Running script: $scriptPath"
+
+            $botIds = ${{ parameters.BotIds }}
+            if ($botIds -is [array]) {
+                $botIdsString = $botIds -join ","
+            } else {
+                $botIdsString = $botIds
+            }
+
+            $result = & $scriptPath `
+              -ControlRoomAPIUrl $(AutomationAnywhere.Url) `
+              -BotIds $botIdsString `
+              -AccessToken $(AccessToken)
+            
+            if(!$result.Success) {
+              Write-Host "##vso[task.complete result=Failed;]DONE"
+              return
+            }
+
+            Write-Host "Bots info retrieved successfully"
+            $botsJson = $result.Bots | ConvertTo-Json -Depth 5
+            Write-Host "botsJson: $botsJson"
+            $botsJson | Out-File "$(Build.ArtifactStagingDirectory)\Bots_$(Get-Date -Format 'yyyyMMdd_HHmmss').json"
+
+      - task: PowerShell@2
         name: Export
         displayName: 'Export and Download the bot'
         inputs:
@@ -65,7 +104,12 @@ stages:
                 $botIdsString = $botIds
             }
 
-            $exportResult = & $exportScriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -BotIds $botIdsString -AccessToken $(AccessToken)
+            $exportResult = & $exportScriptPath `
+              -ControlRoomAPIUrl $(AutomationAnywhere.Url) `
+              -BotIds $botIdsString `
+              -IncludePackages $${{ parameters.IncludePackages }} `
+              -AccessToken $(AccessToken)
+
             if(!$exportResult.Success) {
               Write-Host "##vso[task.complete result=Failed;]DONE"
               return
@@ -98,7 +142,12 @@ stages:
             $downloadFileId = $statusResult.DownloadFileId
             $downloadScriptPath = "$(Build.SourcesDirectory)\pipeline\scripts\downloadExportedBots.ps1"
             Write-Host "Running download script: $downloadScriptPath"
-            $downloadResult = & $downloadScriptPath -ControlRoomAPIUrl $(AutomationAnywhere.Url) -DownloadFileId $downloadFileId -PipelineWorkspace $(Pipeline.Workspace) -AccessToken $(AccessToken)
+            $downloadResult = & $downloadScriptPath `
+              -ControlRoomAPIUrl $(AutomationAnywhere.Url) `
+              -DownloadFileId $downloadFileId `
+              -PipelineWorkspace $(Build.ArtifactStagingDirectory) `
+              -AccessToken $(AccessToken)
+
             if ($downloadResult.Success) {
               Write-Host "##vso[task.setvariable variable=ArchiveFileId;isOutput=true]$downloadFileId"
               Write-Host "##vso[task.setvariable variable=ArchivePassword;isOutput=true]$($exportResult.ArchivePassword)"
@@ -111,7 +160,7 @@ stages:
         name: Publish
         displayName: 'Publish the exported bot'
         inputs:
-          pathtoPublish: '$(Pipeline.Workspace)\$(Export.ArchiveFileId).zip' 
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)'
           artifactName: 'Bot'
           publishLocation: 'Container'
 

@@ -4,7 +4,9 @@ param (
     [Parameter(Mandatory = $true)]
     [string]$AccessToken,
     [Parameter(Mandatory = $true)]
-    [string]$BotIds
+    [string]$BotIds,
+    [Parameter(Mandatory = $true)]
+    [bool]$includePackages = $true
 )
 
 $baseUri = New-Object System.Uri($ControlRoomAPIUrl)
@@ -28,7 +30,7 @@ if($BotIds -like "*,*") {
 $requestBody = @{
     name = $exportName
     fileIds = $botIdsArray
-    includePackages = $true
+    includePackages = $includePackages
     archivePassword = $archivePassword
 } | ConvertTo-Json
 
