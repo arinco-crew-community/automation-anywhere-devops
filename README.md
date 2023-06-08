@@ -41,21 +41,23 @@ The diagram below shows steps to accomplish deployment of bots from Dev to UAT a
 
 2. First, the pipeline authenticates to the **development Control Room**. (For more information, see [Authentication](#authentication)).
 
-3. Following authentication, it creates a request to export bot(s). (For more information, see [Export Request](#export-request)).
+3. Following authentication, it requests information about the given bot(s). (For more information, see [Get Bots Information](#get-bots-information)).
 
-4. Since the export request is asynchronous, the pipeline periodically checks export status. (For more information, see [Import/Export Status](#importexport-status)).
+4. As the next setp, it creates a request to export bot(s). (For more information, see [Export Request](#export-request)).
 
-5. Once the package is ready in the **development Control Room**, the pipeline downloads the generated zip file using the Control Room API, and uploads it to Azure DevOps artifacts. (For more information, see [Download Exported Bots](#download-exported-bots)).
+5. Since the export request is asynchronous, the pipeline periodically checks export status. (For more information, see [Import/Export Status](#importexport-status)).
 
-6. Next, the pipeline authenticates to the **destination Control Room** (UAT or Prod) to obtain a new access token.
+6. Once the package is ready in the **development Control Room**, the pipeline downloads the generated zip file using the Control Room API, and uploads it to Azure DevOps artifacts. (For more information, see [Download Exported Bots](#download-exported-bots)).
 
-7. After downloading the artifact, the pipeline creates an asynchronous Import Bot(s) Request. (For more information, see [Import Request](#import-request)).
+7. Next, the pipeline authenticates to the **destination Control Room** (UAT or Prod) to obtain a new access token.
 
-8. The pipeline then needs to periodically check the status of the import request until it is successfully done.
+8. After downloading the artifact, the pipeline creates an asynchronous Import Bot(s) Request. (For more information, see [Import Request](#import-request)).
+
+9. The pipeline then needs to periodically check the status of the import request until it is successfully done.
 
 ### Authentication
 
-Authentication can be achieved using either a combination of username and apiKey, or username and password. For the purposes of this sample DevOps pipeline, we are utilizing the username and apiKey method.
+[Authentication](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/auth-api-supported.html#tag/auth/paths/~1authentication/post) can be achieved using either a combination of username and apiKey, or username and password. For the purposes of this sample DevOps pipeline, we are utilizing the username and apiKey method.
 
 To generate an API Key, it's essential that the user account, which is being used for DevOps, has the privilege to generate API Keys. User privileges in Automation Anywhere are governed by Role-Based Access Control (RBAC), meaning that my user account has been assigned a role that permits the generation of API Keys.
 
@@ -73,28 +75,34 @@ The request to Authenticate if successful returns token with some additional inf
 
 ![Authenticate to Control Room](Authentication.png)
 
+### Get Bots Information
+
+This step serves as a verification measure using [Repostory Management API](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/repository-management-api.html#tag/Repository/paths/~1workspaces~1%7BworkspaceType%7D~1files~1list/post), wherein we gather data pertaining to the provided bot Ids. It not only facilitates the accumulation of valuable information but also confirms their presence within the public workspace. By employing this method, we can ensure the accuracy of our bot tracking and management process, thereby enhancing the efficiency and reliability of our operations.
+
+![Get Bots Information](GetBotsInformation.png)
+
 ### Export Request
 
-The Export Request is a Bot LifeCycle Management (BLM) API request, which, upon successful initiation, immediately returns a 202 response. To trigger this request, the user must possess the following permissions for the necessary folders: "Export bots", "View package", and "Check in or Check out".
+[The Export Request](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/blm-api.html#tag/BLM/paths/~1v2~1blm~1export/post) is a Bot LifeCycle Management (BLM) API request, which, upon successful initiation, immediately returns a 202 response. To trigger this request, the user must possess the following permissions for the necessary folders: "Export bots", "View package", and "Check in or Check out".
 
 ![Export Bots API](ExportBots.png)
 The requestId provided in the response can be utilized in subsequent steps to both retrieve the status and download the resulting output.
 
 ### Import/Export Status
 
-The Import/Export status is tracked via the same API and simply indicates the status of the operation, whether it's successful, pending, or has failed. The goal is to receive a 200 HTTP status code, with a `Status` value of `COMPLETED` in the JSON body of the response.
+[The Import/Export status](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/blm-api.html#tag/BLM/paths/~1v2~1blm~1status~1%7BrequestId%7D/get) is tracked via the same API and simply indicates the status of the operation, whether it's successful, pending, or has failed. The goal is to receive a 200 HTTP status code, with a `Status` value of `COMPLETED` in the JSON body of the response.
 
 ![Import/Export Status](ImportExportStatus.png)
 
 ### Download Exported Bots
 
-Using the `requestId` obtained from the export request response, the content of the bots can be downloaded in a zip file format. If an archivePassword was provided during the export request, the downloaded zip file will be password-protected.
+Using the `requestId` obtained from the export request response, the content of the bots can be downloaded via [BLM Download API](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/blm-api.html#tag/BLM/paths/~1v2~1blm~1download~1%7BdownloadFileId%7D/get) in a zip file format. If an archivePassword was provided during the export request, the downloaded zip file will be password-protected.
 
 ![Download Bots](DownloadBots.png)
 
 ### Import Request
 
-As previously discussed, once the bot contents have been downloaded, the subsequent steps involve authenticating with the new control room API and sending a request to import the downloaded zip file.
+As previously discussed, once the bot contents have been downloaded, the subsequent steps involve authenticating with the new control room API and sending a request to import the downloaded zip file using [BLM Import API](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/blm-api.html#tag/BLM/paths/~1v2~1blm~1import/post).
 
 One key distinction with this API compared to others is that the request body uses `form-data`. This presents its own set of unique challenges when making DevOps calls.
 
@@ -123,6 +131,8 @@ To enhance its functionality, one approach might be to provide users with a web 
 - Display all existing bots in the form of a folder structure, mirroring their presentation in the Control Room, so users can easily select them.
 
 - Provide additional information about the bots, such as their check-out status, the developer responsible for them, and so on.
+
+- Utilise the [Export repository bots by label or version](https://docs.automationanywhere.com/bundle/enterprise-v2019/page/blm-api.html#tag/BLM/paths/~1v2~1blm~1export~1version/post) to have more granular control over what is exported.
 
 These enhancements would make `bot life cycle management` more robust and user-friendly.
 
